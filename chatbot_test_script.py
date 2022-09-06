@@ -34,7 +34,7 @@ class UserBehavior(TaskSet):
         request_success.fire(
             request_type='Welcome Menu',
             name='Welcome Menu',
-            response_time=int((time.time() - start_at) * 1000000),
+            response_time=int((time.time() - start_at) * 1000),
             response_length=len(body),
         )
 
@@ -52,7 +52,7 @@ class UserBehavior(TaskSet):
         request_success.fire(
             request_type='Welcome Form',
             name='Welcome Form Submit',
-            response_time=int((time.time() - start_at) * 1000000),
+            response_time=int((time.time() - start_at) * 1000),
             response_length=len(body),
         )
 
@@ -70,7 +70,7 @@ class UserBehavior(TaskSet):
         request_success.fire(
             request_type='Random Message',
             name='Random Message',
-            response_time=int((time.time() - start_at) * 1000000),
+            response_time=int((time.time() - start_at) * 1000),
             response_length=len(body),
         )
 
