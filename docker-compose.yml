@@ -7,7 +7,7 @@ services:
      - "8080:8080"
     volumes:
       - ./:/mnt/locust
-    command: -f /mnt/locust/chatbot_test_script.py.py --master -H http://master:8080
+    command: -f /mnt/locust/chatbot_test_script.py --master -H http://master:8080
   
   worker:
     image: locustio/locust
