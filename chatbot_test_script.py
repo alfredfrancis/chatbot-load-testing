@@ -33,7 +33,7 @@ class UserBehavior(TaskSet):
         request_success.fire(
             request_type='WebSocket Sent',
             name='test/ws/echo',
-            response_time=int((time.time() - start_at) * 1000000),
+            response_time=int((time.time() - start_at) * 1000),
             response_length=len(body),
         )
     
@@ -49,7 +49,7 @@ class UserBehavior(TaskSet):
         request_success.fire(
             request_type='WebSocket Sent',
             name='test/ws/echo',
-            response_time=int((time.time() - start_at) * 1000000),
+            response_time=int((time.time() - start_at) * 1000),
             response_length=len(body),
         )
 
@@ -67,7 +67,7 @@ class UserBehavior(TaskSet):
         request_success.fire(
             request_type='WebSocket Sent',
             name='test/ws/echo',
-            response_time=int((time.time() - start_at) * 1000000),
+            response_time=int((time.time() - start_at) * 1000),
             response_length=len(body),
         )
 
