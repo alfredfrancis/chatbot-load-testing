@@ -22,7 +22,7 @@ ws_url = "https://bots.cogniassist.com/61126f22624f978214b20966/default/socket.i
 Fire up Locust.io
 
 ```shell script
-locust --host=0.0.0.0 --port=8080 --locustfile chatbot_test_script.py
+locust --host 127.0.0.1 --port 8080 --locustfile chatbot_test_script.py
 ```
 
 #### Docker-compose Setup

@@ -3,36 +3,64 @@ import time
 
 import socketio
 from locust import HttpLocust, TaskSet, task, between
-from locust.events import request_success
+from locust.events import request_success, request_failure
 
 
 class UserBehavior(TaskSet):
-    statements = ['Do you provide covid coverage ?', 'I want to buy health insurance', 'Insurance']
-
     def on_start(self):
+        start_at = time.time()
         sio = socketio.Client()
-        sio.connect('https://bots.cogniassist.com/', socketio_path='/61126f22624f978214b20966/default/socket.io',
-                    transports='websocket', wait_timeout=2)
-        self.ws = sio
+        try:
+            sio.connect('https://bots.cogniassist.com/', socketio_path='/61126f22624f978214b20966/default/socket.io',
+                    transports='websocket', wait_timeout=5)
+            self.ws = sio
+        except Exception as e:
+            request_failure.fire(
+                request_type="socketio",
+                name="Connect",
+                response_time=0,
+                response_length=0,
+                exception=e
+            )
+            self.ws = None
+            return
+
         self.user_id = sio.sid
-        # body = json.dumps(["session_confirm", self.user_id])
         body = '{"session_request", {"session_id": "' + self.user_id + '"}}'
         self.ws.emit(body)
+        request_success.fire(
+            request_type='socketio',
+            name='Connect',
+            response_time=int((time.time() - start_at) * 1000),
+            response_length=len(body),
+            )
+        time.sleep(1)
 
     def on_quit(self):
         self.ws.disconnect()
 
     @task(1)
     def trigger_welcome_menu(self):
+        if self.ws is None:
+            return
+
         start_at = time.time()
 
-        body = {"message": "/default/welcome", "session_id": self.user_id}
+        body = {"message": "hello, how are you ?", "session_id": self.user_id}
 
-        # self.ws.send(body)
-        self.ws.emit('user_uttered', data=body)
-
+        try:
+            self.ws.emit('user_uttered', data=body)
+        except Exception as e:
+            request_failure.fire(
+                request_type="socketio",
+                name='Welcome Menu',
+                response_time=0,
+                response_length=0,
+                exception=e
+            )
+            return
         request_success.fire(
-            request_type='Welcome Menu',
+            request_type='socketio',
             name='Welcome Menu',
             response_time=int((time.time() - start_at) * 1000),
             response_length=len(body),
@@ -73,6 +101,7 @@ class UserBehavior(TaskSet):
             response_time=int((time.time() - start_at) * 1000),
             response_length=len(body),
         )
+        time.sleep(1)
 
 
 class WebsiteUser(HttpLocust):
