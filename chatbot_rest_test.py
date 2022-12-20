@@ -6,7 +6,8 @@ from locust import HttpLocust, TaskSet, task, between
 from locust.events import request_success
 from typing import Dict
 
-BOT_URL = "https://bots.cogniassist.com/61126f22624f978214b20966/default/webhooks/rest/webhook/"
+BOT_URL = "https://bots.cogniassist.com/61126f22624f978214b20966/loadtest/webhooks/rest/webhook/"
+# BOT_URL = "http://127.0.0.1:8080/webhooks/rest/webhook/"
 
 
 def send_message(payload: Dict):
@@ -16,13 +17,7 @@ def send_message(payload: Dict):
     return response
 
 
-def get_session_id():
-    return str(uuid.uuid4())
-
-
 class UserBehavior(TaskSet):
-    statements = ['Do you provide covid coverage ?', 'I want to buy health insurance', 'Insurance']
-
     def on_start(self):
         self.session_id = str(uuid.uuid4())
 
@@ -35,7 +30,7 @@ class UserBehavior(TaskSet):
 
         payload = {
             "message": "/default/welcome",
-            "sender": get_session_id()
+            "sender": self.session_id
         }
         response = send_message(payload)
         if response.status_code == 200:
@@ -51,14 +46,14 @@ class UserBehavior(TaskSet):
         start_at = time.time()
 
         payload = {
-            "message": "Hi",
-            "sender": get_session_id()
+            "message": "I am Alfred",
+            "sender": self.session_id
         }
         response = send_message(payload)
         if response.status_code == 200:
             request_success.fire(
-                request_type='Smalltalk',
-                name='Smalltalk',
+                request_type='Welcome Menu',
+                name='Say Name',
                 response_time=int((time.time() - start_at) * 1000),
                 response_length=len(response.text),
             )
